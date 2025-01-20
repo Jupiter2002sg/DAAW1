@@ -1,0 +1,69 @@
+extends layout
+
+block content 
+    .container 
+        .no-gutters.row.pt-3.col-lg-12
+            .card
+                .card-body
+                    h6 Location
+                    #map(style="height: 400px;")
+
+block scripts
+  script(src="/dist/leaflet.js")
+  script(src="/modules/leaflet.markercluster/dist/leaflet.markercluster.js")
+  script(src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js")
+
+  if storesData
+      script.
+        var stores = !{JSON.stringify(storesData)};
+
+        var customIcon = L.icon({
+            iconUrl: '/dist/icons/marker.png',  
+            iconSize: [30, 30], 
+            iconAnchor: [12, 41], 
+            popupAnchor: [3, -35], 
+            shadowSize: [41, 41] 
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const map = L.map('map').setView([0, 0], 2);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            const geocoder = L.Control.Geocoder.nominatim();
+            const storeCluster = L.markerClusterGroup();
+            let bounds = L.latLngBounds();
+
+            const geocodePromises = stores.map(store => {
+                return new Promise((resolve) => {
+                    geocoder.geocode(store.address, function(results) {
+                        if (results && results.length > 0) {
+                            const result = results[0];
+                            const latitude = result.center.lat;
+                            const longitude = result.center.lng;
+
+                            const marker = L.marker([latitude, longitude], {icon: customIcon})
+                                .bindPopup('<strong>' + store.name + '</strong><br>Rating: ' + store.averageRating + ' / 5<br>Address: ' + store.address);
+
+                            bounds.extend([latitude, longitude]);
+                            resolve(marker); 
+                        } else {
+                            console.log('Geocoding failed for:', store.address);
+                            resolve(null);
+                    }});
+                });
+            });
+
+            Promise.all(geocodePromises).then(markers => {
+                markers.filter(marker => marker !== null).forEach(marker => {
+                    storeCluster.addLayer(marker);
+                });
+
+                map.addLayer(storeCluster);
+            }).catch(err => {
+                console.log('Error procesando las direcciones:', err);
+            });
+        });

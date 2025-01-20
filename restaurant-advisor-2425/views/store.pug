@@ -9,7 +9,7 @@ block content
             img.card-img-top(src=`/uploads/${store.photo || 'store.png'}`)
             .card-body
                 h5.fs-0 #{store.name}
-                p.mb-0= store.address
+                p.mb-0= store.geolocation
 
         .no-gutters.row
             .pr-lg-2.col-lg-12
@@ -20,11 +20,11 @@ block content
                                 each tag in store.tags
                                     a.badge.bg-light.textprimary(href=`/tags/${tag}`) #{tag}
 
-        if geolocation
+        if geolocation 
             .no-gutters.row.pt-3.col-lg-12
                 .card
                     .card-body
-                        h5 Map
+                        h4 Map
                         #map(style="height: 400px;")
 
         if user
@@ -45,30 +45,39 @@ block scripts
   // Cargar el script de Leaflet desde la carpeta dist
   script(src="/dist/leaflet.js")
 
-  // Verificamos si hay coordenadas para la tienda
+  // Checkear coordenadas
   if geolocation
       script.
         var customIcon = L.icon({
             iconUrl: '/icons/marker.png',  
-            iconSize: [30, 30], // Tamaño del icono
-            iconAnchor: [12, 41], // Ancla del icono
-            popupAnchor: [3, -35], // Ancla del popup
-            shadowSize: [41, 41] // Tamaño de la sombra
+            iconSize: [30, 30], 
+            iconAnchor: [12, 41], 
+            popupAnchor: [3, -35],
+            shadowSize: [41, 41] 
         });
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Crear el mapa y centrarlo en las coordenadas de la tienda
-            const map = L.map('map').setView([#{geolocation.lat}, #{geolocation.lng}], 15);
+            const map = L.map('map').setView([0, 0], 2); // Coordenadas iniciales dummy
 
-            // Cargar los tiles de OpenStreetMap
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // Crear un marcador con el icono personalizado
-            L.marker([#{geolocation.lat}, #{geolocation.lng}], {icon: customIcon})
-                .addTo(map)
-                .bindPopup('<strong>#{store.name}</strong><br>#{store.address}')
-                .openPopup();
+            // Crear instancia del geocoder
+            const geocoder = L.Control.Geocoder.nominatim();
+            // Usar geocoder para convertir la dirección a coordenadas
+            geocoder.geocode('#{store.address}', function(results) {
+                if (results && results.length > 0) {
+                    const { center } = results[0];
+                    map.setView(center, 15);
+
+                    L.marker(center, {icon: customIcon})
+                        .addTo(map)
+                        .bindPopup('<strong>#{store.name}</strong><br>Rating: #{store.averageRating} / 5')
+                        .openPopup();
+                } else {
+                    console.error('No se pudo geocodificar la dirección.');
+                }
+            });
         });

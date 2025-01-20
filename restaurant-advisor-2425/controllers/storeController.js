@@ -7,9 +7,9 @@ const fetch = require('node-fetch');
 
 //*** Verify Credentials
 const confirmOwner = (store, user) => {
-    if (!store.author.equals(user._id)) {
-    throw Error('You must own the store in order to edit it');
-    } 
+    if (!store.author.equals(user._id) && !user.admin) {
+        throw Error('You must own the store in order to edit it');
+    }
 };
 
 exports.homePage = (req, res) => {
@@ -71,24 +71,6 @@ exports.createStore = async (req, res) => {
     req.body.author = req.user._id; 
 };
 
-async function getGeolocationFromAddress(address) {
-    const baseUrl = 'https://nominatim.openstreetmap.org/search';
-    
-    try {
-        const response = await fetch(`${baseUrl}?q=${encodeURIComponent(address)}&format=json&addressdetails=1`);
-        const data = await response.json();
-
-        // Comprobar si la respuesta contiene datos
-        if (data && data.length > 0) {
-            return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon)};
-        } else {
-            throw new Error('No geolocation data found for the given address.');
-        }
-    } catch (error) {
-        console.error('Error fetching geolocation:', error);
-        return { lat: null, lon: null };
-    }
-}
 
 exports.getStoreBySlug = async (req, res, next) => {
     try {
@@ -101,7 +83,7 @@ exports.getStoreBySlug = async (req, res, next) => {
         }
 
         // Obtener las coordenadas de la tienda usando la función de geolocalización
-        const geolocation = await getGeolocationFromAddress(store.address);
+        const geolocation = store.geolocation;
 
         // Si las coordenadas son válidas, pasarlas al renderizado de la vista
         res.render('store', {
@@ -123,29 +105,11 @@ exports.getMaps = async (req, res) => {
         return res.status(404).render('error', { message: 'Stores not found' });
     }
 
-    const storesData = [];
-
-    // Geocodificar las direcciones de todas las tiendas
-    for (const store of stores) {
-        try {
-            const geolocation = await getGeolocationFromAddress(store.address);
-            storesData.push({
-                name: store.name,
-                averageRating: store.averageRating || 0,
-                geolocation: geolocation
-            });
-        } catch (error) {
-            console.error(`Error geocodification the adress of the store ${store.name}:`, error);
-            storesData.push({
-                name: store.name,
-                averageRating: store.averageRating || 0,
-                geolocation: null 
-            });
-        }
-    }
-
-    // Renderizar la vista del mapa con las tiendas geocodificadas
-    res.render('storesMap', { storesData });
+    const storesData = stores.map(store => ({
+        name: store.name,
+        address: store.address,
+        averageRating: store.averageRating || 0
+    }));
 };
 
 exports.getStores = async (req, res) => {
@@ -235,4 +199,13 @@ exports.getStores = async (req, res) => {
     });
 };
 
+exports.deleteStore = async (req, res) => {
+    const store = await Store.findByIdAndDelete(req.params.id);
+    if (!store) {
+        req.flash('error', 'Store not found');
+        return res.redirect('back');
+    }
+    req.flash('success', `Store "${store.name}" has been deleted`);
+    res.redirect('/stores');
+};
 

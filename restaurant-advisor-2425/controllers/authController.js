@@ -5,7 +5,6 @@ const User = mongoose.model('User');
 const mail = require('../handlers/mail');
 const { body, validationResult } = require('express-validator');
 
-//PROBANDO COMMIT 
 exports.login = (req, res) => {
     passport.authenticate('local',
         {
