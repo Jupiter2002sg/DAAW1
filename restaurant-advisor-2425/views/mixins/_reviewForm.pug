@@ -1,0 +1,17 @@
+mixin reviewForm()
+    form.form(action=`/reviews/${store._id}` method='POST' enctype='application/x-www-form-urlencoded')
+        .mb-3
+            <div class="rating">
+                <input type="radio" name="rating" value="5" id="5">
+                <label for="5" class="form-label">☆</label>
+                <input type="radio" name="rating" value="4" id="4">
+                <label for="4" class="form-label">☆</label>
+                <input type="radio" name="rating" value="3" id="3">
+                <label for="3" class="form-label">☆</label>
+                <input type="radio" name="rating" value="2" id="2">
+                <label for="2" class="form-label">☆</label>
+                <input type="radio" name="rating" value="1" id="1">
+                <label for="1" class="form-label">☆</label>
+            </div>
+            textarea(class="formcontrol" name="text" placeholder=`Add review`)
+        button(type="submit" class="btn btn-primary") Submit review

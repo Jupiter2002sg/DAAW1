@@ -1,0 +1,27 @@
+mixin storeForm(store = {})
+
+    form(action=`/add/${store._id || ''}` method="POST" enctype="multipart/form-data")
+        .mb-3
+            label(for="name" class="form-label") Name
+            input(class="form-control" type="text" id="name" name="name" value=store.name required)
+        .mb-3
+            label(for="description" class="form-label") Description
+            textarea(class="form-control" id="description" name="description")= store.description
+        .mb-3
+            label(for="photo" class="form-label") Photo
+            input(class="form-control" type="file" name="photo" id="photo" accept="image/gif, image/png, image/jpeg")
+            if store.photo
+                img(src=`/uploads/${store.photo}` alt=store.name width=200)
+        .mb-3
+            label(for="address" class="form-label") Address
+            input(class="form-control" type="text" id="address" name="address" value=store.address required)
+        .mb-3
+            label(for="tags" class="form-label") Options:
+        .mb-3.form-check
+            - const choices = ['Wifi', 'Open Late', 'Family Friendly', 'Vegan']
+            - const tags = store.tags || []
+            each choice in choices
+                .form-check-label
+                    input(class="form-check-input" type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
+                    label(for=choice class="form-check-label") #{choice}
+        button(type="submit" class="btn btn-primary") Save

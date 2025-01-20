@@ -1,0 +1,74 @@
+extends layout
+
+include mixins/_reviewForm
+include mixins/_review
+
+block content
+    .container
+        .mb-3.card
+            img.card-img-top(src=`/uploads/${store.photo || 'store.png'}`)
+            .card-body
+                h5.fs-0 #{store.name}
+                p.mb-0= store.address
+
+        .no-gutters.row
+            .pr-lg-2.col-lg-12
+                .card
+                    .card-body
+                        p=store.description
+                            if store.tags
+                                each tag in store.tags
+                                    a.badge.bg-light.textprimary(href=`/tags/${tag}`) #{tag}
+
+        if geolocation
+            .no-gutters.row.pt-3.col-lg-12
+                .card
+                    .card-body
+                        h5 Map
+                        #map(style="height: 400px;")
+
+        if user
+            .no-gutters.row
+                .pt-3.lg-2.col-lg-12
+                    .card
+                        .card-body
+                            +reviewForm(store)
+        if store.reviews
+            each r in store.reviews
+                .no-gutters.row
+                    .pt-3.lg-2.col-lg-12
+                        .card
+                            .card-body
+                                +review(r)
+    
+block scripts
+  // Cargar el script de Leaflet desde la carpeta dist
+  script(src="/dist/leaflet.js")
+
+  // Verificamos si hay coordenadas para la tienda
+  if geolocation
+      script.
+        var customIcon = L.icon({
+            iconUrl: '/icons/marker.png',  
+            iconSize: [30, 30], // Tamaño del icono
+            iconAnchor: [12, 41], // Ancla del icono
+            popupAnchor: [3, -35], // Ancla del popup
+            shadowSize: [41, 41] // Tamaño de la sombra
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Crear el mapa y centrarlo en las coordenadas de la tienda
+            const map = L.map('map').setView([#{geolocation.lat}, #{geolocation.lng}], 15);
+
+            // Cargar los tiles de OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Crear un marcador con el icono personalizado
+            L.marker([#{geolocation.lat}, #{geolocation.lng}], {icon: customIcon})
+                .addTo(map)
+                .bindPopup('<strong>#{store.name}</strong><br>#{store.address}')
+                .openPopup();
+        });

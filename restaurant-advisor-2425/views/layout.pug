@@ -1,0 +1,67 @@
+doctype html
+html
+  head
+    title #{title}
+    link(rel='stylesheet', href='/css/style.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='icon', href='data:;base64,iVBORw0KGgo=')
+    link(rel="stylesheet" href="/icons/font-awesome/css/fontawesome.min.css") 
+    script(src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js")
+    link(rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css")
+    script(src="/dist/app.bundle.js")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+  body
+    block header
+      nav.navbar.navbar-expand-sm.bg-body-tertiary(data-bs-theme="dark")
+        div.container-fluid
+          a.navbar-brand(href='#')
+            img(src="/icons/logo.svg" alt="" width="140" height="40" title="Bootstrap")
+          button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
+            span.navbar-toggler-icon
+          .collapse.navbar-collapse#navbarNav
+            ul.navbar-nav
+              each item in h.menu
+                li.nav-item
+                  a.nav-link(href=`${item.slug}`)
+                    span #{item.title}
+              li.nav-item
+                    a.nav-link(href="/stores/map")
+                        span Map
+            .form-inline
+              input.form-control.mr-sm-2(type="text" placeholder="Coffee, beer..." name="search")
+              .search__results
+          ul.navbar-nav.ms-auto
+            if user
+              li.nav-item
+                a.nav-link(href='/account')
+                  i.fa.fa-user-circle(style="padding-right:5px")
+                  span #{user.name}
+              li.nav-item
+                a.nav-link(href='/logout')
+                  i.fa.fa-sign-out(style="padding-right:5px")
+                  |Log Out
+            else
+              li.nav-item
+                a.nav-link(href='/register')
+                  i.fa.fa-user(style="padding-right:5px")
+                  |Sign Up
+              li.nav-item
+                a.nav-link(href='/login')
+                  i.fa.fa-sign-in(style="padding-right:5px")
+                  |Login
+    .content
+      block messages
+        .flashes
+          if flashes
+            - const categories = Object.keys(flashes)
+            each category in categories
+              each message in flashes[category]
+                .alert(class=`${category}`)
+                  != message
+                  span.closebtn(onClick="this.parentElement.remove()") &times;
+      block content
+
+    block scripts
+      script(src="/dist/jquery-3.7.1.min.js")
+      script(src="/dist/bootstrap.bundle.min.js")
+      script(src="/dist/app.bundle.js")

@@ -1,0 +1,15 @@
+extends layout
+block content
+    .container
+        h2=title
+        form.form(action="/account" method="POST" enctype='application/xwww-form-urlencoded')
+            .mb-3
+                label(for="name" class="form-label") Name
+                br
+                input(class="formcontrol" type="text" name="name" value=user.name)
+            .mb-3
+                label(for="email" class="form-label") Email Address
+                br
+                input(class="formcontrol" type="email" name="email" value=user.email)
+                br
+            button(type="submit" class="btn btn-primary") Update

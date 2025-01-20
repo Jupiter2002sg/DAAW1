@@ -1,0 +1,11 @@
+
+mixin storeCard(store = {})
+    .store
+        .card.h-100(style="width: 18rem;")
+            img.card-img-top(src=`/uploads/${store.photo || 'store.png'}`)
+            .card-body.d-flex.flex-column
+                h5.card-title
+                    a(href=`/store/${store.slug}` style="color:black") #{store.name}
+                p.card-text= store.description.split(' ').slice(0,15).join(' ')
+                if user && store.author.equals(user._id)
+                    a.mt-auto.btn.btn-primary(href=`/stores/${store._id}/edit`) Edit

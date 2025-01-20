@@ -1,0 +1,25 @@
+extends layout
+
+block content
+    .container
+        h2 #{title}
+        form(action='/register' method='POST' enctype='application/x-wwwform-urlencoded')
+            .mb-3
+                label(for="name" class="form-label") Name
+                br
+                input(class="formcontrol" type="text" name="name" value=body ? body.name : '' required)
+            .mb-3
+                label(for="email" class="form-label") Email
+                br
+                input(class="formcontrol" type="email" name="email" value=body ? body.email : '' required)
+            .mb-3
+                label(for="password" class="form-label") Password
+                br
+                input(class="formcontrol" type="password" name="password")
+            .mb-3
+                label(for="password-confirm" class="formlabel") Confirm Password
+                br
+                input(class="formcontrol" type="password" name="password-confirm")
+                br
+                br
+                button(type="submit" class="btn btn-primary") Register

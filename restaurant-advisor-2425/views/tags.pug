@@ -1,0 +1,20 @@
+extends layout
+
+include mixins/_storeCard
+
+block content
+    .container
+        h2 #{tag || 'Tags'}
+
+        ul.list-group.col-lg-4
+            each t in tags
+                a.list-group-item.d-flex.justify-content-between.alignitems-center(href=
+                    `/tags/${t._id}` 
+                    class=(t._id === tag ? 'active' : '')
+                )
+                    span= t._id
+                    span.badge.bg-primary= t.count
+                    
+        .stores(style="padding-top:20px")
+            each store in stores
+                +storeCard(store) 

@@ -1,0 +1,11 @@
+extends layout
+block content
+    .container
+        h2=title
+        form.form(method="POST" enctype='application/x-www-formurlencoded')
+            .mb-3
+                label(for="password" class="form-label") Password
+                input(class="formcontrol" type="password" name="password")
+                label(for="password-confirm" class="formlabel") Confirm Password
+                input(class="formcontrol" type="password" name="password-confirm")
+            button(type="submit" class="btn btn-primary") Reset Password

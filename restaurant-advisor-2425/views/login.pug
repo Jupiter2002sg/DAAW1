@@ -1,0 +1,11 @@
+extends layout
+
+include mixins/_loginForm
+include mixins/_forgotForm
+
+block content
+    .container
+        h2 Log in
+        +loginForm()
+        h2(style='padding-top:20px') I forgot my password
+        +forgotForm()

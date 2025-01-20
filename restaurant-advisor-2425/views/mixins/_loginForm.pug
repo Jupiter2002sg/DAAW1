@@ -1,0 +1,9 @@
+mixin loginForm()
+    form.form(action='/login' method='POST' enctype='application/x-wwwform-urlencoded')
+        .mb-3
+            label(for="email" class="form-label") Email Address
+            input(class="form-control" type="email" name="email")
+        .mb-3
+            label(for="password" class="form-label") Password
+            input(class="form-control" type="password" name="password")
+        button(type="submit" class="btn btn-primary") Log in

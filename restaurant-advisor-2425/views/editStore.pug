@@ -1,0 +1,7 @@
+extends layout
+include mixins/_storeForm
+
+block content
+    h2 #{title}
+    //-if we pass an object "store" this is an edit, if not, this is new
+    +storeForm(store)
