@@ -4,6 +4,7 @@ const { Jimp } = require('jimp');
 const mongoose = require('mongoose');
 const Store = mongoose.model('Store');
 const fetch = require('node-fetch');
+const Review = mongoose.model('Review');
 
 //*** Verify Credentials
 const confirmOwner = (store, user) => {
@@ -208,4 +209,28 @@ exports.deleteStore = async (req, res) => {
     req.flash('success', `Store "${store.name}" has been deleted`);
     res.redirect('/stores');
 };
+
+exports.getUserTopStores = async (req, res) => {
+    const userReviews = await Review.aggregate([
+        { $match: { author: req.user._id } }, 
+        { $sort: { store: 1, created: -1 } }, 
+        {
+            $group: {
+                _id: '$store', 
+                mostRecentReview: { $first: '$$ROOT' } 
+            }
+        },
+        { $sort: { 'mostRecentReview.rating': -1 } } 
+    ]);
+    if (userReviews.length === 0) {
+        return res.render('topStores', { stores: [], hideButton: true, text: `${req.user.name} has no top stores.` });
+    }
+    const storeIds = userReviews.map(review => review._id);
+    const stores = await Store.find({ _id: { $in: storeIds } });
+    const storesMap = new Map(stores.map(store => [store._id.toString(), store]));
+    const sortedStores = storeIds.map(id => storesMap.get(id.toString()));
+    const hideButton = true;
+    const text = `${req.user.name}'s top ${sortedStores.length} stores`;
+    res.render('topStores', { stores: sortedStores, hideButton, text, personalReviews: userReviews });
+}
 

@@ -1,0 +1,33 @@
+block content
+    .container
+        .d-flex.align-items-center.justify-content-between.mb-4
+            h2.mb-0 #{text || `My Top ${stores.length} Stores`}
+            if (user)
+                a.btn.btn-primary.ml-auto(class=hideButton ? 'd-none' : '' href=`/mytop/${user._id}`) My Top Restaurants
+        if (stores.length != 0)
+            table#storeTable.table
+                thead
+                    tr
+                        th(scope="col") #
+                        th(scope="col") Photo
+                        th(scope="col") Name
+                        if(!personalReviews)
+                            th(scope="col") Reviews
+                        if(!personalReviews)
+                            th(scope="col") Average Rating
+                        else
+                            th(scope="col") My Rating
+                tbody
+                    each store, i in stores
+                        tr
+                            th(scope="row") #{i + 1}
+                            td
+                                a(href=`/store/${store.slug}`)
+                                    img(width=200 src=`/uploads/${store.photo || 'store.png'}` alt=store.name)
+                            td 
+                                a(href=`/store/${store.slug}`)= store.name
+                            if(!personalReviews)
+                                td #{store.reviews.length}
+                            td #{personalReviews ? personalReviews[i].mostRecentReview.rating : (store.averageRating).toFixed(1)} / 5 
+        else
+            p.text-muted No reviews found!

@@ -35,7 +35,9 @@ const storeSchema = new mongoose.Schema({
     totalReviews: {
         type: Number,
         default: 0
-    }
+    },
+    closedDays: [String]
+    
 });
 
 // ********PRE-SAVE HOOK********* -

@@ -99,6 +99,8 @@ router.post('/reviews/:id',
 //SHOW TOP STORES
 router.get('/top', catchErrors(storeController.getTopStores));
 
+router.get('/mytops/:userId', authController.isLoggedIn, catchErrors(storeController.getUserTopStores));
+
 //RECEIVE FORGOT ACCOUNT ACTION
 router.post('/account/forgot', catchErrors(authController.forgot));
 
