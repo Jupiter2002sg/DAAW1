@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const router = require('./routes/router');
 const errorHandlers = require('./handlers/errorHandlers');
-
 const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
@@ -10,7 +9,7 @@ const helpers = require('./helpers');
 const flash = require('connect-flash');
 const passport = require('passport');
 require('./handlers/passport');
-
+const methodOverride = require('method-override');
 
 
 // create our Express app
@@ -70,5 +69,7 @@ if (app.get('env') === 'development') {
 /* production error handler */
 app.use(errorHandlers.productionErrors);
 
+// Middleware para soportar PUT y DELETE en formularios HTML
+app.use(methodOverride('_method'));
 
 module.exports = app;

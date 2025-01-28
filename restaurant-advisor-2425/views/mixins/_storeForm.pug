@@ -1,27 +1,85 @@
 mixin storeForm(store = {})
+  form(action=`/add/${store._id || ''}` method="POST" enctype="multipart/form-data")
+    .mb-3
+      label(for="name" class="form-label") Name
+      input.form-control(type="text" id="name" name="name" value=store.name required)
+    .mb-3
+      label(for="description" class="form-label") Description
+      textarea.form-control(id="description" name="description")= store.description
+    .mb-3
+      label(for="photo" class="form-label") Photo
+      input.form-control(type="file" name="photo" id="photo" accept="image/gif, image/png, image/jpeg")
+      if store.photo
+        img(src=`/uploads/${store.photo}` alt=store.name width=200)
+    .mb-3
+      label(for="address" class="form-label") Address
+      input.form-control(type="text" id="address" name="address" value=store.address required)
 
-    form(action=`/add/${store._id || ''}` method="POST" enctype="multipart/form-data")
-        .mb-3
-            label(for="name" class="form-label") Name
-            input(class="form-control" type="text" id="name" name="name" value=store.name required)
-        .mb-3
-            label(for="description" class="form-label") Description
-            textarea(class="form-control" id="description" name="description")= store.description
-        .mb-3
-            label(for="photo" class="form-label") Photo
-            input(class="form-control" type="file" name="photo" id="photo" accept="image/gif, image/png, image/jpeg")
-            if store.photo
-                img(src=`/uploads/${store.photo}` alt=store.name width=200)
-        .mb-3
-            label(for="address" class="form-label") Address
-            input(class="form-control" type="text" id="address" name="address" value=store.address required)
-        .mb-3
-            label(for="tags" class="form-label") Options:
-        .mb-3.form-check
-            - const choices = ['Wifi', 'Open Late', 'Family Friendly', 'Vegan']
-            - const tags = store.tags || []
-            each choice in choices
-                .form-check-label
-                    input(class="form-check-input" type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
-                    label(for=choice class="form-check-label") #{choice}
-        button(type="submit" class="btn btn-primary") Save
+    .mb-3
+      label(for="tags" class="form-label") Options:
+    .mb-3.form-check
+      - const choices = ['Wifi', 'Open Late', 'Family Friendly', 'Vegan']
+      - const tags = store.tags || []
+      each choice in choices
+        .form-check-label
+          input.form-check-input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
+          label(for=choice class="form-check-label") #{choice}
+
+    .mb-3
+      label(for="closedDays" class="form-label") Closed Days:
+      - const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+      - const closedDays = store.closedDays || []
+      each day in daysOfWeek
+        .form-check
+          input.form-check-input(type="checkbox" name="closedDays" value=day checked=(closedDays.includes(day)) id=day)
+          label.form-check-label(for=day) #{day}
+    .mb-3
+      label(class="form-label") Opening schedule:
+      .reservation-slots-container
+        - const reservationSlots = store.reservationSlots || []
+        each slot, index in reservationSlots
+          .reservation-slot.mb-3
+            label(for=`reservationSlots[${index}][day]` class="form-label") Select a day
+            select.form-control(name=`reservationSlots[${index}][day]` required)
+              option(value="" disabled selected) Choose a day
+              each day in daysOfWeek
+                option(value=day selected=(slot.day === day)) #{day}
+            label(for=`reservationSlots[${index}][startTime]` class="form-label mt-2") Start time
+            input.form-control(type="time" name=`reservationSlots[${index}][startTime]` value=slot.startTime required)
+            label(for=`reservationSlots[${index}][endTime]` class="form-label mt-2") End time
+            input.form-control(type="time" name=`reservationSlots[${index}][endTime]` value=slot.endTime required)
+            label(for=`reservationSlots[${index}][maxReservations]` class="form-label mt-2") Max. reservations
+            input.form-control(type="number" name=`reservationSlots[${index}][maxReservations]` value=slot.maxReservations min="1" required)
+
+      button.btn.btn-secondary(type="button" id="addReservationSlotBtn") Add new time slot
+
+    button.btn.btn-primary(type="submit") Save
+
+  script.
+    const closedDays = #{JSON.stringify(store.closedDays || [])};
+
+    document.getElementById('addReservationSlotBtn').addEventListener('click', function() {
+      const container = document.querySelector('.reservation-slots-container');
+      const index = container.children.length;
+
+      const newReservationSlotHTML = `
+        <div class="reservation-slot mb-3">
+          <label for="reservationSlots[${index}][day]" class="form-label">Select a day</label>
+          <select name="reservationSlots[${index}][day]" class="form-control" required>
+            <option value="" disabled selected>Choose a day</option>
+            ${['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => `
+              <option value="${day}" ${closedDays.includes(day) ? 'disabled' : ''}>${day}</option>`).join('')}
+          </select>
+          
+          <label for="reservationSlots[${index}][startTime]" class="form-label mt-2">Start time</label>
+          <input type="time" class="form-control" name="reservationSlots[${index}][startTime]" required>
+          
+          <label for="reservationSlots[${index}][endTime]" class="form-label mt-2">End time</label>
+          <input type="time" class="form-control" name="reservationSlots[${index}][endTime]" required>
+          
+          <label for="reservationSlots[${index}][maxReservations]" class="form-label mt-2">Max. reservations</label>
+          <input type="number" class="form-control" name="reservationSlots[${index}][maxReservations]" min="1" required>
+        </div>`;
+      
+      container.insertAdjacentHTML('beforeend', newReservationSlotHTML);
+    });

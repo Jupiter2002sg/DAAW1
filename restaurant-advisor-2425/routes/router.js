@@ -6,6 +6,7 @@ const storeController = require('../controllers/storeController');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const reviewController = require('../controllers/reviewController');
+const reservationController = require('../controllers/reservationController');
 
 
 router.get('/index/', storeController.homePage);
@@ -118,5 +119,26 @@ router.post('/account/reset/:token',
 router.get('/stores', catchErrors(storeController.getStores));
 // SHOW all STOREs with PAGINATION
 router.get('/stores/page/:page', catchErrors(storeController.getStores));
+
+//RESERVATION
+
+// Configuración para propietarios
+router.post('/stores/:id/schedule', reservationController.setSchedule);
+
+// Consultar disponibilidad
+router.get('/stores/:id/availability', reservationController.getAvailability);
+
+// Reservas de usuario
+router.post('/store/:id/reservation', (req, res, next) => {
+    console.log('Solicitud recibida en la ruta POST /store/:id/reservation');
+    console.log('ID de la tienda:', req.params.id);
+    next();
+  }, authController.isLoggedIn, reservationController.createReservation);
+
+router.put('/reservations/:id/cancel', authController.isLoggedIn, catchErrors(reservationController.cancelReservation));
+
+router.get('/myreservations', reservationController.getUserReservations);
+
+
 
 module.exports = router;

@@ -1,0 +1,56 @@
+mixin reservationForm(store)
+  form(action=`/store/${store._id}/reservation` method="POST")
+    .mb-3
+      label(for="date" class="form-label") Select a date
+      input.form-control(type="date" id="date" name="date" required 
+        data-reservationSlots=JSON.stringify(store.reservationSlots || []) 
+        data-closedDays=JSON.stringify(store.closedDays || [])
+      )
+
+    .mb-3
+      label(for="timeSlot" class="form-label") Select a time slot
+      select.form-control(id="timeSlot" name="timeSlot" required disabled)
+        option(value="" disabled selected) Choose a time slot
+        each slot in store.reservationSlots
+          option(value=`${slot.startTime}-${slot.endTime}`)= `${slot.startTime} - ${slot.endTime}`
+
+    button.btn.btn-primary(type="submit") Reserve
+
+  script.
+    const form = document.querySelector('form');
+    const reservationSlots = JSON.parse(form.querySelector('input[name="date"]').getAttribute('data-reservationSlots'));
+    const closedDays = JSON.parse(form.querySelector('input[name="date"]').getAttribute('data-closedDays'));
+    const timeSlotSelect = document.getElementById('timeSlot');
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    document.getElementById('date').addEventListener('change', async function () {
+      const selectedDate = this.value;
+      timeSlotSelect.innerHTML = '<option value="" disabled selected>Choose a time slot</option>';
+
+      const selectedDateObj = new Date(selectedDate);
+      const selectedDay = days[selectedDateObj.getDay()];
+
+      console.log('Selected Date:', selectedDate);
+      console.log('Selected Day:', selectedDay);
+
+      if (!closedDays.includes(selectedDay)) {
+        const daySlots = reservationSlots.filter(slot => slot.day === selectedDay);
+
+        if (daySlots.length > 0) {
+          timeSlotSelect.disabled = false;
+
+          daySlots.forEach(slot => {
+            const option = document.createElement('option');
+            option.value = `${slot.startTime}-${slot.endTime}`;
+            option.textContent = `${slot.startTime} - ${slot.endTime} (Max: ${slot.maxReservations})`;
+            timeSlotSelect.appendChild(option);
+          });
+        } else {
+          console.log('No time slots available for this day.');
+          timeSlotSelect.disabled = true;
+        }
+      } else {
+        console.log('Restaurant is closed on this day.');
+        timeSlotSelect.disabled = true;
+      }
+    });

@@ -2,6 +2,7 @@ extends layout
 
 include mixins/_reviewForm
 include mixins/_review
+include mixins/_reservationForm
 
 block content
     .container
@@ -26,13 +27,42 @@ block content
                     .card-body
                         h4 Map
                         #map(style="height: 400px;")
+        // Mostrar las franjas horarias agrupadas por día
+        if groupedSlots && Object.keys(groupedSlots).length > 0
+            .no-gutters.row.pt-3.col-lg-12
+                .card
+                    .card-body
+                        h5 Available Time Slots
+                        each slots, day in groupedSlots
+                            h6.mt-3= day
+                            table.table.table-striped
+                                thead
+                                    tr
+                                        th Start time
+                                        th End time
+                                        th Max. reservations
+                                tbody
+                                    each slot in slots
+                                        tr
+                                        td= slot.startTime
+                                        td= slot.endTime
+                                        td= slot.maxReservations
 
+        // Formulario de reservas para usuarios logueados
+        if user
+            .no-gutters.row.pt-3.col-lg-12
+                .card
+                    .card-body
+                        h5 Make a Reservation
+                        +reservationForm(store)
+        
         if user
             .no-gutters.row
                 .pt-3.lg-2.col-lg-12
                     .card
                         .card-body
                             +reviewForm(store)
+        
         if store.reviews
             each r in store.reviews
                 .no-gutters.row
@@ -40,44 +70,40 @@ block content
                         .card
                             .card-body
                                 +review(r)
-    
+
 block scripts
-  // Cargar el script de Leaflet desde la carpeta dist
-  script(src="/dist/leaflet.js")
+  script.
+    console.log('Grouped Slots:', !{JSON.stringify(groupedSlots)});
 
-  // Checkear coordenadas
-  if geolocation
-      script.
-        var customIcon = L.icon({
-            iconUrl: '/icons/marker.png',  
-            iconSize: [30, 30], 
-            iconAnchor: [12, 41], 
-            popupAnchor: [3, -35],
-            shadowSize: [41, 41] 
-        });
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault(); // Evitar que se recargue la página
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData);
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const map = L.map('map').setView([0, 0], 2); // Coordenadas iniciales dummy
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 18,
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-
-            // Crear instancia del geocoder
-            const geocoder = L.Control.Geocoder.nominatim();
-            // Usar geocoder para convertir la dirección a coordenadas
-            geocoder.geocode('#{store.address}', function(results) {
-                if (results && results.length > 0) {
-                    const { center } = results[0];
-                    map.setView(center, 15);
-
-                    L.marker(center, {icon: customIcon})
-                        .addTo(map)
-                        .bindPopup('<strong>#{store.name}</strong><br>Rating: #{store.averageRating} / 5')
-                        .openPopup();
-                } else {
-                    console.error('No se pudo geocodificar la dirección.');
-                }
+          try {
+            const response = await fetch(form.action, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
             });
+
+            const result = await response.json();
+            if (response.ok) {
+              alert(result.message); // Mostrar mensaje de éxito
+            } else {
+              alert(`Error: ${result.message}`); // Mostrar mensaje de error
+            }
+          } catch (error) {
+            console.error(error);
+            alert('An error occurred while making the reservation.');
+          }
         });
+      }
+    });
+
+

@@ -36,11 +36,20 @@ const storeSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    closedDays: [String]
+    closedDays: [String],
+    reservationSlots: [
+        {
+          day: String,
+          startTime: String,
+          endTime: String,
+          maxReservations: Number,
+        },
+    ], 
+    created: { type: Date, default: Date.now },
     
 });
 
-// ********PRE-SAVE HOOK********* -
+// ********PRE-SAVE HOOK********* 
 storeSchema.pre('save', async function(next) {
     if (!this.isModified('name')) {
         next();

@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  .container
+    h1 Your Reservations
+
+    if reservations && reservations.length > 0
+      table.table.table-striped.mt-4
+        thead
+          tr
+            th Store Name
+            th Date
+            th Time Slot
+            th Status
+            th Actions
+        tbody
+          each reservation in reservations
+            tr
+              td= reservation.store.name
+              td= new Date(reservation.date).toLocaleDateString()
+              td= `${reservation.startTime} - ${reservation.endTime}`
+              td= reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1)
+              td
+                if reservation.status === 'confirmed'
+                  form(action=`/reservations/${reservation._id}/cancel?_method=PUT` method="POST")
+                    button.btn.btn-danger.btn-sm(type="submit") Cancel
+              
+    else
+      p.mt-4.text-center You have no reservations yet.
+
+block scripts
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('User Reservations loaded successfully');
+    });

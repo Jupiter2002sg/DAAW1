@@ -36,6 +36,14 @@ html
           ul.navbar-nav.ms-auto
             if user
               li.nav-item
+              a.nav-link(href='/mytops/:userId')
+                i.fa.fa-star(style="padding-right:5px")
+                | My Tops
+              li.nav-item
+              a.nav-link(href='/myreservations')
+                i.fa.fa-calendar(style="padding-right:5px")
+                | My Reservations
+              li.nav-item
                 a.nav-link(href='/account')
                   i.fa.fa-user-circle(style="padding-right:5px")
                   span #{user.name}

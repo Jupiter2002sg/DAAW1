@@ -1,90 +1,137 @@
 [
     {
-        "_id":"58c039938060197ca0b52d4d",
-        "slug":"olive-oil",
-        "name":"Olive Oil",
-        "description":"Friendly atmosphere. Great selection of local brews. ",
-        "address": "1600 Amphitheatre Parkway, Mountain View, CA",
-        "author":"58c039018060197ca0b52d4c",
-        "photo":"1.jpg",
-        "tags":["Wifi","Open Late","Vegan"],
-        "created":"2017-03-08T17:04:19.860Z"
+      "_id": "58c039938060197ca0b52d4d",
+      "slug": "olive-oil",
+      "name": "Olive Oil",
+      "description": "Friendly atmosphere. Great selection of local brews.",
+      "address": "1600 Amphitheatre Parkway, Mountain View, CA",
+      "author": "58c039018060197ca0b52d4c",
+      "photo": "1.jpg",
+      "tags": ["Wifi", "Open Late", "Vegan"],
+      "closedDays": ["Sunday"],
+      "reservationSlots": [
+        { "day": "Monday", "startTime": "12:00", "endTime": "14:00", "maxReservations": 10 },
+        { "day": "Monday", "startTime": "18:00", "endTime": "20:00", "maxReservations": 15 },
+        { "day": "Tuesday", "startTime": "12:00", "endTime": "14:00", "maxReservations": 12 },
+        { "day": "Friday", "startTime": "18:00", "endTime": "21:00", "maxReservations": 20 }
+      ],
+      "created": "2017-03-08T17:04:19.860Z"
     },
     {
-        "_id":"58c039ee8060197ca0b52d4e",
-        "slug":"sourdough-on-king",
-        "name":"Sour on King",
-        "description":"Amazing selection of everything sour, fermented and tart. ",
-        "address": "King William Street, Hamilton, ON, Canada",
-        "author":"58c03ada8060197ca0b52d52",
-        "photo":"2.jpg",
-        "tags":["Vegan"],
-        "created":"2017-03-08T17:05:50.134Z"
+      "_id": "58c039ee8060197ca0b52d4e",
+      "slug": "sourdough-on-king",
+      "name": "Sour on King",
+      "description": "Amazing selection of everything sour, fermented and tart.",
+      "address": "King William Street, Hamilton, ON, Canada",
+      "author": "58c03ada8060197ca0b52d52",
+      "photo": "2.jpg",
+      "tags": ["Vegan"],
+      "closedDays": ["Tuesday"],
+      "reservationSlots": [
+        { "day": "Wednesday", "startTime": "12:00", "endTime": "15:00", "maxReservations": 12 },
+        { "day": "Thursday", "startTime": "18:00", "endTime": "21:00", "maxReservations": 10 },
+        { "day": "Saturday", "startTime": "10:00", "endTime": "13:00", "maxReservations": 10 }
+      ],
+      "created": "2017-03-08T17:05:50.134Z"
     },
     {
-        "_id":"58c03a428060197ca0b52d4f",
-        "slug":"the-french",
-        "name":"The French",
-        "description":"High end french restaurant on the hippest street in town. ",
-        "address": "The French, King William Street, Hamilton, ON, Canada",
-        "author":"58c039018060197ca0b52d4c",
-        "photo":"3.jpg",
-        "tags":["Open Late"],
-        "created":"2017-03-08T17:07:14.681Z"
+      "_id": "58c03a428060197ca0b52d4f",
+      "slug": "the-french",
+      "name": "The French",
+      "description": "High end french restaurant on the hippest street in town.",
+      "address": "The French, King William Street, Hamilton, ON, Canada",
+      "author": "58c039018060197ca0b52d4c",
+      "photo": "3.jpg",
+      "tags": ["Open Late"],
+      "closedDays": ["Monday", "Sunday"],
+      "reservationSlots": [
+        { "day": "Tuesday", "startTime": "12:00", "endTime": "14:00", "maxReservations": 15 },
+        { "day": "Friday", "startTime": "19:00", "endTime": "22:00", "maxReservations": 20 },
+        { "day": "Saturday", "startTime": "18:00", "endTime": "22:00", "maxReservations": 25 }
+      ],
+      "created": "2017-03-08T17:07:14.681Z"
     },
     {
-        "_id":"58c03a958060197ca0b52d50",
-        "slug":"rust-city-brewery",
-        "name":"Rust City Brewery",
-        "description":"A family run urban coffee house, craft beer pub and brewpub combining our love of coffee, beer and people",
-        "address": "27 King William Street, Hamilton, ON, Canada",
-        "author":"58c039018060197ca0b52d4c",
-        "photo":"4.jpg",
-        "tags":["Wifi","Open Late","Family Friendly"],
-        "created":"2017-03-08T17:08:37.131Z"
+      "_id": "58c03a958060197ca0b52d50",
+      "slug": "rust-city-brewery",
+      "name": "Rust City Brewery",
+      "description": "A family run urban coffee house, craft beer pub and brewpub combining our love of coffee, beer and people",
+      "address": "27 King William Street, Hamilton, ON, Canada",
+      "author": "58c039018060197ca0b52d4c",
+      "photo": "4.jpg",
+      "tags": ["Wifi", "Open Late", "Family Friendly"],
+      "closedDays": ["Thursday"],
+      "reservationSlots": [
+        { "day": "Monday", "startTime": "12:00", "endTime": "14:00", "maxReservations": 20 },
+        { "day": "Saturday", "startTime": "10:00", "endTime": "14:00", "maxReservations": 30 },
+        { "day": "Sunday", "startTime": "12:00", "endTime": "16:00", "maxReservations": 25 }
+      ],
+      "created": "2017-03-08T17:08:37.131Z"
     },
     {
-        "_id":"58c057838060197ca0b52d54",
-        "slug":"berkeley-north",
-        "name":"Berkeley North",
-        "description":"Set in the revitalized James St. North neighbourhood, Berkeley North is a West Coast inspired restaurant located on historic King William Street in the heart of downtown Hamilton.\r\n",
-        "address": "31 King William St, Hamilton, ON, Canada",
-        "author":"58c03ada8060197ca0b52d52",
-        "photo":"8.jpg",
-        "tags":["Wifi","Vegan"],
-        "created":"2017-03-08T19:12:03.957Z"
+      "_id": "58c057838060197ca0b52d54",
+      "slug": "berkeley-north",
+      "name": "Berkeley North",
+      "description": "Set in the revitalized James St. North neighbourhood, Berkeley North is a West Coast inspired restaurant located on historic King William Street in the heart of downtown Hamilton.",
+      "address": "31 King William St, Hamilton, ON, Canada",
+      "author": "58c03ada8060197ca0b52d52",
+      "photo": "8.jpg",
+      "tags": ["Wifi", "Vegan"],
+      "closedDays": ["Sunday"],
+      "reservationSlots": [
+        { "day": "Tuesday", "startTime": "12:00", "endTime": "14:00", "maxReservations": 15 },
+        { "day": "Thursday", "startTime": "18:00", "endTime": "21:00", "maxReservations": 20 }
+      ],
+      "created": "2017-03-08T19:12:03.957Z"
     },
     {
-        "_id":"58c05aef8060197ca0b52d55",
-        "slug":"mezcal-tacos--tequila",
-        "name":"Mezcal Tacos & Tequila",
-        "description":"Familiar Mexican fare with a gourmet twist & housemade margaritas, plus a lively late-night scene.\r\n",
-        "address":"150 James St S, Hamilton, ON L8P 3A2, Canada",
-        "author":"58c039018060197ca0b52d4c",
-        "photo":"6.jpg",
-        "tags":["Open Late"],
-        "created":"2017-03-08T19:26:39.863Z"
+      "_id": "58c05aef8060197ca0b52d55",
+      "slug": "mezcal-tacos--tequila",
+      "name": "Mezcal Tacos & Tequila",
+      "description": "Familiar Mexican fare with a gourmet twist & housemade margaritas, plus a lively late-night scene.",
+      "address": "150 James St S, Hamilton, ON L8P 3A2, Canada",
+      "author": "58c039018060197ca0b52d4c",
+      "photo": "6.jpg",
+      "tags": ["Open Late"],
+      "closedDays": [],
+      "reservationSlots": [
+        { "day": "Monday", "startTime": "18:00", "endTime": "21:00", "maxReservations": 10 },
+        { "day": "Wednesday", "startTime": "12:00", "endTime": "14:00", "maxReservations": 12 },
+        { "day": "Friday", "startTime": "19:00", "endTime": "22:00", "maxReservations": 18 }
+      ],
+      "created": "2017-03-08T19:26:39.863Z"
     },
     {
-        "_id":"58c05b558060197ca0b52d56",
-        "slug":"two-black-sheep",
-        "name":"Two Black Sheep",
-        "description":"Intimate, rustic-chic bar providing oysters, charcuterie, cheese plates, wine & craft cocktails.\r\n",
-        "address":"163 John St S, Hamilton, ON L8N 2C3, Canada",
-        "author":"58c039018060197ca0b52d4c",
-        "photo":"7.jpg",
-        "tags":["Wifi","Open Late"],
-        "created":"2017-03-08T19:28:21.738Z"
+      "_id": "58c05b558060197ca0b52d56",
+      "slug": "two-black-sheep",
+      "name": "Two Black Sheep",
+      "description": "Intimate, rustic-chic bar providing oysters, charcuterie, cheese plates, wine & craft cocktails.",
+      "address": "163 John St S, Hamilton, ON L8N 2C3, Canada",
+      "author": "58c039018060197ca0b52d4c",
+      "photo": "7.jpg",
+      "tags": ["Wifi", "Open Late"],
+      "closedDays": ["Saturday"],
+      "reservationSlots": [
+        { "day": "Wednesday", "startTime": "18:00", "endTime": "22:00", "maxReservations": 25 },
+        { "day": "Friday", "startTime": "20:00", "endTime": "22:00", "maxReservations": 15 }
+      ],
+      "created": "2017-03-08T19:28:21.738Z"
     },
     {
-        "_id":"58c05bcd8060197ca0b52d57",
-        "slug":"donut-monster",
-        "name":"Donut Monster",
-        "description":"Small-batch, from-scratch donuts available at select coffee shops on Thursdays, Fridays, and Saturdays.",
-        "address":"The Kitchen Collective, King Street East, Hamilton, ON, Canada",
-        "author":"58c039018060197ca0b52d4c",
-        "photo":"5.jpg",
-        "tags":["Vegan"],
-        "created":"2017-03-08T19:30:21.147Z"
+      "_id": "58c05bcd8060197ca0b52d57",
+      "slug": "donut-monster",
+      "name": "Donut MONSTER",
+      "description": "Small-batch, from-scratch donuts available at select coffee shops on Thursdays, Fridays, and Saturdays.",
+      "address": "The Kitchen Collective, King Street East, Hamilton, ON, Canada",
+      "author": "58c039018060197ca0b52d4c",
+      "photo": "5.jpg",
+      "tags": ["Vegan"],
+      "closedDays": ["Monday", "Tuesday"],
+      "reservationSlots": [
+        { "day": "Friday", "startTime": "08:00", "endTime": "11:00", "maxReservations": 20 },
+        { "day": "Saturday", "startTime": "12:00", "endTime": "15:00", "maxReservations": 15 }
+      ],
+      "created": "2017-03-08T19:30:21.147Z"
     }
-]
+  ]
+  

@@ -5,3 +5,22 @@ block content
     h2 #{title}
     //-if we pass an object "store" this is an edit, if not, this is new
     +storeForm(store)
+
+block scripts
+    script.
+        document.addEventListener('DOMContentLoaded', function () {
+            const addSlotButton = document.querySelector('.add-slot');
+            const slotsContainer = document.querySelector('.reservation-slots');
+
+            addSlotButton.addEventListener('click', function () {
+                const newSlot = document.createElement('div');
+                newSlot.classList.add('slot');
+                newSlot.innerHTML = `
+                    <input class="form-control" type="text" name="reservationSlots[day][]" placeholder="Day (e.g., Monday)" required>
+                    <input class="form-control" type="time" name="reservationSlots[startTime][]" placeholder="Start Time" required>
+                    <input class="form-control" type="time" name="reservationSlots[endTime][]" placeholder="End Time" required>
+                    <input class="form-control" type="number" name="reservationSlots[maxReservations][]" placeholder="Max Reservations" min="1" required>
+                `;
+                slotsContainer.appendChild(newSlot);
+            });
+        });

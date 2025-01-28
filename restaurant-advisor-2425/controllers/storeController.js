@@ -73,32 +73,39 @@ exports.createStore = async (req, res) => {
 };
 
 
-exports.getStoreBySlug = async (req, res, next) => {
+exports.getStoreBySlug = async (req, res) => {
     try {
-        // Buscar la tienda por el slug
-        const store = await Store.findOne({ slug: req.params.slug });
-
-        // Si no se encuentra la tienda, pasar al siguiente middleware
-        if (!store) {
-            return res.status(404).render('error', {message: 'Store not found'});
-        }
-
-        // Obtener las coordenadas de la tienda usando la función de geolocalización
-        const geolocation = store.geolocation;
-
-        // Si las coordenadas son válidas, pasarlas al renderizado de la vista
-        res.render('store', {
-            title: `Store ${store.name}`,
-            store: store,
-            geolocation   // pasar la geolocalización 
-        });
-    } catch (error) {
-        res.render('store', { 
-            title: `Store ${store.name}`,
-            store, 
-            geolocation: null, 
-    })};
-};
+      const store = await Store.findOne({ slug: req.params.slug });
+  
+      if (!store) {
+        return res.status(404).render('error', { message: 'Store not found' });
+      }
+  
+      // Agrupar las franjas horarias por día
+      const groupedSlots = store.reservationSlots.reduce((acc, slot) => {
+        if (!acc[slot.day]) acc[slot.day] = [];
+        acc[slot.day].push(slot);
+        return acc;
+      }, {});
+      
+  
+      // Logs para depuración
+      console.log('Store:', store);
+      console.log('Grouped Slots:', groupedSlots);
+  
+      res.render('store', {
+        title: store.name,
+        store,
+        groupedSlots, // Pasamos los datos agrupados
+        user: req.user || null,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).render('error', { message: 'An error occurred' });
+    }
+  };
+  
+  
 
 exports.getMaps = async (req, res) => {
     const stores = await Store.find();
@@ -125,18 +132,48 @@ exports.editStore = async (req, res) => {
 };
 
 exports.updateStore = async (req, res) => {
-    // find and update the store
-    const store = await Store.findOneAndUpdate({ _id: req.params.id }, req.
-   body, {
-        new: true, //return new store instead of old one
-        runValidators: true
-    }).exec();
+    try {
+        // Extraer días cerrados y franjas horarias del cuerpo de la solicitud
+        const { closedDays, reservationSlots } = req.body;
 
-    req.flash('success', `Successfully updated <strong>${store.name}</strong>.
-    <a href="/store/${store.slug}">View store</a> `);
+        // Procesar las franjas horarias
+        const formattedSlots = [];
+        if (reservationSlots && reservationSlots.day) {
+            for (let i = 0; i < reservationSlots.day.length; i++) {
+                formattedSlots.push({
+                    day: reservationSlots.day[i],
+                    startTime: reservationSlots.startTime[i],
+                    endTime: reservationSlots.endTime[i],
+                    maxReservations: parseInt(reservationSlots.maxReservations[i], 10),
+                });
+            }
+        }
 
-    res.redirect(`/stores/${store._id}/edit`);
+        // Actualizar la tienda con los datos adicionales
+        const store = await Store.findOneAndUpdate(
+            { _id: req.params.id },
+            {
+                ...req.body, // Mantener compatibilidad con otros campos
+                closedDays: closedDays || [], // Asegurar que sea un array
+                reservationSlots: formattedSlots, // Procesar las franjas horarias
+            },
+            {
+                new: true, // Devolver la tienda actualizada
+                runValidators: true, // Aplicar validaciones del modelo
+            }
+        ).exec();
+
+        req.flash('success', `Successfully updated <strong>${store.name}</strong>.
+        <a href="/store/${store.slug}">View store</a>`);
+
+        res.redirect(`/stores/${store._id}/edit`);
+    } catch (error) {
+        console.error('Error updating store:', error);
+        req.flash('error', 'An error occurred while updating the store.');
+        res.redirect('back');
+    }
 };
+
 
 exports.searchStores = async (req, res) => {
     const stores = await Store.find({

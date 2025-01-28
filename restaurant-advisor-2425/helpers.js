@@ -5,5 +5,5 @@ exports.menu = [
     { slug: '/tags', title: 'Tags', },
     { slug: '/top', title: 'Top', },
     { slug: '/add', title: 'Add', },
-    { slug: '/mytops/:userId', title: 'Top Users', },
+    
 ];
